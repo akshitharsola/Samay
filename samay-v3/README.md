@@ -2,7 +2,7 @@
 
 🚀 **Research-based solution for persistent, anti-bot resistant AI sessions using Ollama**
 
-> **Note**: This project uses Ollama models for local AI processing. The model files are not included in this repository and need to be installed separately via Ollama.
+> **Note**: This project uses Ollama models for local AI processing. **Ollama model files cannot be uploaded to this repository due to size constraints** (typically 4-7GB per model). Models must be installed separately via Ollama CLI.
 
 ## 🎯 What This Solves
 
