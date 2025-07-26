@@ -70,9 +70,11 @@ Thumbs.db
 logs/
 *.log
 
-# Cache
+# Cache (contains sensitive data)
 .cache/
 *.cache
+node_modules/.cache/
+**/node_modules/.cache/
 
 # Temporary files
 tmp/
