@@ -1,0 +1,272 @@
+# Samay v4 - Desktop Services Configuration
+# Based on native_solution.md research findings
+
+services:
+  claude:
+    name: "Claude Desktop"
+    type: "desktop_app"
+    priority: 1
+    enabled: true
+    
+    # Installation paths for different platforms
+    executable_paths:
+      windows: 
+        - "C:/Users/{user}/AppData/Local/Claude/Claude.exe"
+        - "C:/Program Files/Claude/Claude.exe"
+      darwin:
+        - "/Applications/Claude.app"
+        - "/Applications/Claude.app/Contents/MacOS/Claude"
+      linux:
+        - "/opt/claude/claude"
+        - "/usr/local/bin/claude"
+    
+    # Automation configuration
+    automation:
+      method: "electron_cdp"  # Chromium DevTools Protocol for Electron apps
+      backup_method: "system_ui"  # Native UI automation as fallback
+      
+      # Electron-specific selectors (more stable than web)
+      selectors:
+        input: '[data-testid="chat-input"]'
+        input_fallback: 
+          - 'div[contenteditable="true"]'
+          - '[role="textbox"]'
+        submit: '[data-testid="send-button"]'
+        submit_fallback:
+          - 'button[aria-label="Send"]'
+          - 'button[type="submit"]'
+        response: '[data-testid="message-content"]'
+        response_fallback:
+          - '.message-response'
+          - '.assistant-message'
+      
+      # Keyboard shortcuts as alternative to clicking
+      keyboard_shortcuts:
+        submit: "Enter"
+        new_chat: "Ctrl+N"  # or "Cmd+N" on macOS
+    
+    # App lifecycle management
+    lifecycle:
+      startup_timeout: 10  # seconds to wait for app launch
+      response_timeout: 30  # seconds to wait for AI response
+      shutdown_timeout: 5   # seconds to wait for graceful shutdown
+      
+    # Process detection
+    process_names:
+      windows: ["Claude.exe", "claude.exe"]
+      darwin: ["Claude"]
+      linux: ["claude"]
+
+  perplexity:
+    name: "Perplexity Desktop"
+    type: "desktop_app" 
+    priority: 2
+    enabled: true
+    
+    executable_paths:
+      windows:
+        - "C:/Users/{user}/AppData/Local/Perplexity/Perplexity.exe"
+        - "C:/Program Files/Perplexity/Perplexity.exe"
+      darwin:
+        - "/Applications/Perplexity.app"
+        - "/Applications/Perplexity- Ask Anything.app"
+      linux:
+        - "/opt/perplexity/perplexity"
+        - "/usr/local/bin/perplexity"
+    
+    automation:
+      method: "electron_cdp"
+      backup_method: "system_ui"
+      
+      selectors:
+        input: '[data-testid="ask-input"]'
+        input_fallback:
+          - 'textarea[placeholder*="Ask anything"]'
+          - 'input[placeholder*="Ask"]'
+        submit: '[data-testid="ask-button"]'
+        submit_fallback:
+          - 'button[aria-label="Submit"]'
+          - 'button[aria-label="Ask"]'
+        response: '[data-testid="answer"]'
+        response_fallback:
+          - '.answer-content'
+          - '.response-text'
+      
+      keyboard_shortcuts:
+        submit: "Enter"
+        new_search: "Ctrl+K"
+    
+    lifecycle:
+      startup_timeout: 15  # Increase timeout for App Store version
+      response_timeout: 25  # Perplexity can be slower due to search
+      shutdown_timeout: 5
+      
+    process_names:
+      windows: ["Perplexity.exe", "perplexity.exe"]
+      darwin: ["Perplexity"]
+      linux: ["perplexity"]
+
+  gemini:
+    name: "Gemini PWA"
+    type: "pwa_wrapper"  # Since no official desktop app exists
+    priority: 3
+    enabled: true
+    
+    # PWA installation and access
+    pwa_config:
+      url: "https://gemini.google.com"
+      install_method: "chrome_pwa"  # Install as PWA via Chrome/Edge
+      
+      # Alternative: Use WebCatalog or similar PWA wrapper
+      wrapper_paths:
+        windows:
+          - "C:/Users/{user}/AppData/Local/WebCatalog/Gemini/Gemini.exe"
+        darwin:
+          - "/Applications/Gemini (WebCatalog).app"
+        linux:
+          - "/opt/webcatalog/gemini/gemini"
+    
+    automation:
+      method: "web_automation"  # Since it's still a web interface
+      backup_method: "system_ui"
+      
+      selectors:
+        input: 'div[contenteditable="true"]'
+        input_fallback:
+          - 'textarea[role="textbox"]'
+          - '[data-testid="input-field"]'
+        submit: 'button[aria-label="Send message"]'
+        submit_fallback:
+          - 'button[aria-label="Send Message"]'
+          - 'button[data-testid="send-button"]'
+        response: '.model-response-text'
+        response_fallback:
+          - '.response-content'
+          - '[data-testid="response-text"]'
+      
+      keyboard_shortcuts:
+        submit: "Enter"
+        new_chat: "Ctrl+Shift+O"
+    
+    lifecycle:
+      startup_timeout: 15  # PWA might take longer to load
+      response_timeout: 35  # Google services can be slower
+      shutdown_timeout: 5
+      
+    # Fallback to browser if PWA not available
+    fallback_browser: true
+    browser_profile: "profiles/gemini"  # Reuse v3 browser profile if needed
+
+# Global automation settings
+automation_settings:
+  # Platform detection
+  platform_priority:
+    - "desktop_app"      # Prefer native desktop apps
+    - "pwa_wrapper"      # Fall back to PWA wrappers  
+    - "browser_automation"  # Last resort: browser automation (v3 style)
+  
+  # Timing settings (human-like behavior)
+  delays:
+    app_launch: [2, 5]      # Random delay range in seconds
+    typing_speed: [0.05, 0.15]  # Delay between keystrokes
+    click_delay: [0.3, 0.8]     # Delay before clicking submit
+    response_check: [1, 2]      # Delay between response checks
+  
+  # Error handling
+  retry_settings:
+    max_retries: 3
+    retry_delay: [2, 5]     # Exponential backoff base
+    
+  # Screenshot settings for debugging
+  screenshots:
+    enabled: true
+    on_error: true
+    save_path: "logs/screenshots"
+    
+  # OCR settings for fallback text extraction
+  ocr:
+    enabled: true
+    engine: "tesseract"
+    confidence_threshold: 0.7
+
+# Platform-specific configurations
+platform_specific:
+  windows:
+    automation_api: "ui_automation"  # Windows UI Automation
+    required_dependencies:
+      - "pywinauto"
+      - "comtypes"
+    
+  macos:
+    automation_api: "accessibility"  # macOS Accessibility API
+    required_dependencies:
+      - "pyobjc-framework-Quartz"
+      - "pyobjc-framework-ApplicationServices"
+    
+  linux:
+    automation_api: "atspi"  # AT-SPI for Linux accessibility
+    required_dependencies:
+      - "pyatspi"
+      - "python-xlib"
+
+# Service health monitoring
+health_checks:
+  enabled: true
+  interval: 300  # Check every 5 minutes
+  
+  checks:
+    - name: "app_installed"
+      description: "Check if desktop app is installed"
+    - name: "app_launchable" 
+      description: "Verify app can be launched"
+    - name: "automation_working"
+      description: "Test basic automation functionality"
+    - name: "response_extraction"
+      description: "Verify response can be extracted"
+
+# Response processing configuration
+response_processing:
+  # Machine code template processing
+  machine_code:
+    enabled: true
+    json_extraction:
+      patterns:
+        - '```json\s*(\{.*?\})\s*```'  # JSON in code blocks
+        - '\{[^{}]*"response"[^{}]*\}' # JSON-like structures
+      required_fields:
+        - "response"
+        - "summary" 
+        - "key_points"
+        - "confidence"
+        - "category"
+      default_values:
+        confidence: 0.5
+        category: "other"
+    
+    # Fallback for non-JSON responses
+    fallback_processing:
+      enabled: true
+      max_length: 1000  # Truncate very long responses
+      extract_key_points: true
+      estimate_confidence: true
+
+# Multi-service coordination
+multi_service:
+  parallel_execution: true
+  max_concurrent_services: 3
+  
+  # Response synthesis
+  synthesis:
+    enabled: true
+    methods:
+      - "consensus_building"  # Find common points
+      - "complementary_info"  # Combine unique insights
+      - "conflict_resolution" # Handle disagreements
+    
+    quality_scoring:
+      enabled: true
+      factors:
+        - "response_length"
+        - "specificity" 
+        - "confidence_score"
+        - "format_compliance"
