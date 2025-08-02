@@ -62,33 +62,78 @@ class PromptDispatcher:
         self.validator = SessionValidator()
         self.local_llm = LocalLLMClient()
         
-        # Service configurations for prompt submission
+        # Service configurations for prompt submission (updated for 2025 DOM)
         self.service_configs = {
             "claude": {
-                "prompt_selector": 'div[contenteditable="true"]',
-                "submit_selector": 'button[aria-label="Send Message"]',
-                "response_selector": '.font-claude-message',
-                "wait_for_response": 3
+                "prompt_selector": '[contenteditable="true"]',
+                "submit_selector": 'button[aria-label="Send"]',
+                "response_selector": '.assistant-response p',
+                "wait_for_response": 5,
+                "backup_selectors": {
+                    "prompt": ['div[contenteditable="true"]', 'textarea[placeholder*="Message"]'],
+                    "submit": ['button[aria-label="Send Message"]', 'button[type="submit"]'],
+                    "response": ['.font-claude-message', '[data-testid="bot-message"]']
+                }
             },
             "gemini": {
-                "prompt_selector": 'div[contenteditable="true"]',
-                "submit_selector": 'button[aria-label="Send message"]',
-                "response_selector": '.model-response-text',
-                "wait_for_response": 3
+                "prompt_selector": 'textarea[role="textbox"]',
+                "submit_selector": 'button[aria-label="Send Message"]',
+                "response_selector": '.reply-content',
+                "wait_for_response": 5,
+                "backup_selectors": {
+                    "prompt": ['div[contenteditable="true"]', 'textarea[placeholder*="Enter"]'],
+                    "submit": ['button[aria-label="Send message"]', 'button[data-testid="send-button"]'],
+                    "response": ['.model-response-text', '[data-testid="response-text"]']
+                }
             },
             "perplexity": {
-                "prompt_selector": 'textarea[placeholder*="Ask anything"]',
-                "submit_selector": 'button[aria-label="Submit"]',
-                "response_selector": '.prose',
-                "wait_for_response": 5
+                "prompt_selector": 'input[type="text"]',
+                "submit_selector": 'button[data-testid="ask-button"]',
+                "response_selector": '.AnswerItem_answerText___3w1rW',
+                "wait_for_response": 7,
+                "backup_selectors": {
+                    "prompt": ['textarea[placeholder*="Ask anything"]', 'input[placeholder*="Ask"]'],
+                    "submit": ['button[aria-label="Submit"]', 'button[type="submit"]'],
+                    "response": ['.prose', '[data-testid="answer-text"]']
+                }
             }
         }
         
         print("🚀 Prompt Dispatcher initialized")
     
+    def _find_element_with_fallback(self, driver, service: str, element_type: str, timeout: int = 10):
+        """Find element using primary selector with backup options"""
+        config = self.service_configs[service]
+        
+        # Try primary selector first
+        primary_selector = config[f"{element_type}_selector"]
+        try:
+            return driver.wait_for_element_visible(primary_selector, timeout=timeout)
+        except Exception as e:
+            print(f"⚠️ {service}: Primary {element_type} selector failed: {primary_selector}")
+            
+            # Try backup selectors
+            backup_selectors = config["backup_selectors"][element_type]
+            for backup_selector in backup_selectors:
+                try:
+                    print(f"🔄 {service}: Trying backup {element_type} selector: {backup_selector}")
+                    return driver.wait_for_element_visible(backup_selector, timeout=timeout//2)
+                except Exception:
+                    continue
+            
+            # If all selectors fail, raise the original exception
+            raise e
+    
     def _submit_prompt_to_service(self, service: str, prompt: str, timeout: int = 60, retry_count: int = 2) -> ServiceResponse:
-        """Submit prompt to a specific service and get response"""
+        """Submit prompt to a specific service and get response with human-like timing"""
+        import random
         start_time = time.time()
+        
+        # Human-like startup delay (1-5 seconds, staggered)
+        startup_delay = random.uniform(1.0, 5.0)
+        print(f"🚀 Starting {service} driver with profile: profiles/{service}")
+        print(f"⏳ Human-like startup delay: {startup_delay:.1f}s")
+        time.sleep(startup_delay)
         
         for attempt in range(retry_count + 1):
             try:
@@ -113,47 +158,92 @@ class PromptDispatcher:
                         retry_count=attempt
                     )
                 
-                # Execute prompt submission
-                with self.driver_factory.get_driver(service, headed=False) as driver:
-                    # Navigate to service
-                    service_url = self.driver_factory.services[service]["url"]
-                    driver.open(service_url)
-                    
-                    # Wait for page to load and verify login
-                    driver.wait_for_element_visible("body", timeout=10)
-                    
-                    if not self.validator.is_logged_in(driver, service):
-                        return ServiceResponse(
-                            service=service,
-                            success=False,
-                            error_message=f"Not logged in to {service}",
-                            execution_time=time.time() - start_time,
-                            retry_count=attempt
-                        )
-                    
-                    # Find and fill prompt input
-                    try:
-                        prompt_element = driver.wait_for_element_visible(
-                            config["prompt_selector"], timeout=10
-                        )
+                # Execute prompt submission with better error handling
+                try:
+                    with self.driver_factory.get_driver(service, headed=False) as driver:
+                        # Navigate to service
+                        service_url = self.driver_factory.services[service]["url"]
+                        driver.open(service_url)
                         
-                        # Clear and enter prompt
-                        driver.clear(config["prompt_selector"])
-                        driver.type(config["prompt_selector"], prompt)
+                        # Wait for page to load and verify login
+                        driver.wait_for_element_visible("body", timeout=10)
                         
-                        # Submit prompt
-                        driver.click(config["submit_selector"])
+                        if not self.validator.is_logged_in(driver, service):
+                            return ServiceResponse(
+                                service=service,
+                                success=False,
+                                error_message=f"Not logged in to {service}",
+                                execution_time=time.time() - start_time,
+                                retry_count=attempt
+                            )
                         
-                        # Wait for response to appear
-                        time.sleep(config["wait_for_response"])
-                        
-                        # Extract response
+                        print(f"✅ {service}: Authentication verified, proceeding to prompt submission...")
+                
+                        # Find and fill prompt input with improved error handling
                         try:
-                            response_elements = driver.find_elements(config["response_selector"])
-                            if response_elements:
-                                # Get the last response (most recent)
-                                response_text = response_elements[-1].text.strip()
-                                
+                            # Find prompt input element with fallback selectors
+                            print(f"🔍 {service}: Locating prompt input...")
+                            prompt_element = self._find_element_with_fallback(driver, service, "prompt", timeout=10)
+                            print(f"✅ {service}: Found prompt input element")
+                            
+                            # Clear existing content and focus
+                            prompt_element.click()
+                            prompt_element.clear()
+                            
+                            # Human-like typing delay (0.5-1.5 seconds to "think")
+                            thinking_delay = random.uniform(0.5, 1.5)
+                            print(f"💭 {service}: Human-like thinking delay: {thinking_delay:.1f}s")
+                            time.sleep(thinking_delay)
+                            
+                            # Type the prompt with human-like timing
+                            print(f"⌨️  {service}: Typing prompt...")
+                            prompt_element.send_keys(prompt)
+                            
+                            # Human-like delay before clicking submit (0.3-0.8 seconds)
+                            submit_delay = random.uniform(0.3, 0.8)
+                            print(f"⏳ {service}: Pre-submit delay: {submit_delay:.1f}s")
+                            time.sleep(submit_delay)
+                            
+                            # Find and click submit button
+                            print(f"🔍 {service}: Locating submit button...")
+                            submit_element = self._find_element_with_fallback(driver, service, "submit", timeout=10)
+                            print(f"✅ {service}: Found submit button")
+                            
+                            submit_element.click()
+                            print(f"📤 {service}: Prompt submitted! Waiting for response...")
+                            
+                            # Wait for response to appear with exponential backoff
+                            base_wait = config["wait_for_response"]
+                            response_wait = base_wait + random.uniform(0.0, 2.0)  # Add variance
+                            max_response_wait = 15  # Maximum wait time
+                            
+                            print(f"⏳ {service}: Waiting {response_wait:.1f}s for initial response...")
+                            time.sleep(response_wait)
+                            
+                            # Try to find response with multiple attempts
+                            response_text = None
+                            for response_attempt in range(3):
+                                try:
+                                    print(f"🔍 {service}: Looking for response (attempt {response_attempt + 1}/3)...")
+                                    response_element = self._find_element_with_fallback(driver, service, "response", timeout=5)
+                                    response_text = response_element.text.strip()
+                                    
+                                    if response_text and len(response_text) > 10:  # Ensure we got substantial content
+                                        print(f"✅ {service}: Response captured ({len(response_text)} chars)")
+                                        break
+                                    else:
+                                        print(f"⚠️ {service}: Response too short, waiting longer...")
+                                        time.sleep(3)
+                                        
+                                except Exception as resp_e:
+                                    print(f"⚠️ {service}: Response attempt {response_attempt + 1} failed: {resp_e}")
+                                    if response_attempt < 2:  # Not the last attempt
+                                        time.sleep(3)
+                                        continue
+                                    else:
+                                        raise resp_e
+                            
+                            if response_text and len(response_text) > 10:
                                 return ServiceResponse(
                                     service=service,
                                     success=True,
@@ -162,38 +252,35 @@ class PromptDispatcher:
                                     retry_count=attempt
                                 )
                             else:
-                                # If no response found, wait a bit more and try again
-                                if attempt < retry_count:
-                                    time.sleep(2)
-                                    continue
-                                
                                 return ServiceResponse(
                                     service=service,
                                     success=False,
-                                    error_message="No response found",
+                                    error_message=f"No valid response found (got: '{response_text[:50]}...')",
                                     execution_time=time.time() - start_time,
                                     retry_count=attempt
                                 )
                         
                         except Exception as e:
+                            error_msg = f"Failed to submit prompt: {str(e)}"
+                            print(f"❌ {service}: {error_msg}")
                             return ServiceResponse(
                                 service=service,
                                 success=False,
-                                error_message=f"Failed to extract response: {str(e)}",
+                                error_message=error_msg,
                                 execution_time=time.time() - start_time,
                                 retry_count=attempt
                             )
-                    
-                    except Exception as e:
-                        if attempt < retry_count:
-                            print(f"⚠️  {service} attempt {attempt + 1} failed: {e}, retrying...")
-                            time.sleep(2)
-                            continue
-                        
+                
+                except Exception as browser_error:
+                    if attempt < retry_count:
+                        print(f"🔄 {service} browser error, retrying ({attempt + 1}/{retry_count}): {str(browser_error)[:100]}")
+                        time.sleep(2)  # Wait before retry
+                        continue
+                    else:
                         return ServiceResponse(
                             service=service,
                             success=False,
-                            error_message=f"Failed to submit prompt: {str(e)}",
+                            error_message=f"Browser error: {str(browser_error)[:200]}",
                             execution_time=time.time() - start_time,
                             retry_count=attempt
                         )
@@ -312,40 +399,42 @@ class PromptDispatcher:
                 timestamp=start_time
             )
         
-        # Execute in parallel using ThreadPool
+        # Execute sequentially to avoid Chrome profile conflicts, but with human-like timing
+        import random
         responses = []
         
-        with ThreadPoolExecutor(max_workers=len(valid_services)) as executor:
-            # Submit all tasks
-            future_to_service = {
-                executor.submit(
-                    self._submit_prompt_to_service,
+        print(f"🚀 Processing {len(valid_services)} services sequentially (with human-like timing)...")
+        print("📝 Note: Sequential execution prevents Chrome profile conflicts")
+        
+        for i, service in enumerate(valid_services, 1):
+            try:
+                print(f"\n[{i}/{len(valid_services)}] 🚀 Starting {service}...")
+                
+                # Add inter-service delay (except for first service)
+                if i > 1:
+                    inter_service_delay = random.uniform(2.0, 4.0)
+                    print(f"⏳ Inter-service delay: {inter_service_delay:.1f}s")
+                    time.sleep(inter_service_delay)
+                
+                response = self._submit_prompt_to_service(
                     service,
                     request.prompt,
                     request.timeout,
                     request.retry_count
-                ): service
-                for service in valid_services
-            }
-            
-            # Collect results as they complete
-            for future in as_completed(future_to_service):
-                service = future_to_service[future]
-                try:
-                    response = future.result()
-                    responses.append(response)
-                    
-                    status = "✅" if response.success else "❌"
-                    print(f"{status} {service}: {response.execution_time:.1f}s")
-                    
-                except Exception as e:
-                    print(f"❌ {service}: Exception - {e}")
-                    responses.append(ServiceResponse(
-                        service=service,
-                        success=False,
-                        error_message=str(e),
-                        execution_time=time.time() - start_time
-                    ))
+                )
+                responses.append(response)
+                
+                status = "✅" if response.success else "❌"
+                print(f"{status} {service}: {response.execution_time:.1f}s ({i}/{len(valid_services)} complete)")
+                
+            except Exception as e:
+                print(f"❌ {service}: Exception - {e} ({i}/{len(valid_services)} complete)")
+                responses.append(ServiceResponse(
+                    service=service,
+                    success=False,
+                    error_message=str(e),
+                    execution_time=time.time() - start_time
+                ))
         
         # Calculate summary stats
         successful = sum(1 for r in responses if r.success)

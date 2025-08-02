@@ -290,7 +290,7 @@ class SessionValidator:
 
     def health_check_all(self, driver_factory) -> dict:
         """
-        Perform health check on all service profiles
+        Perform health check on all service profiles in parallel (human-like)
         
         Returns dict with service status
         """
@@ -299,42 +299,67 @@ class SessionValidator:
         print("\n🏥 Health Check: All Services")
         print("=" * 40)
         
+        # Check profiles first (quick check)
+        profiles = driver_factory.list_profiles()
+        ready_services = []
+        
         for service in driver_factory.services.keys():
+            if not profiles[service]["ready"]:
+                results[service] = {
+                    "status": "not_initialized",
+                    "message": "Profile not initialized"
+                }
+                print(f"❌ {service}: Profile not initialized")
+            else:
+                ready_services.append(service)
+        
+        if not ready_services:
+            return results
+        
+        # Sequential authentication check for ready services (avoids Chrome conflicts)
+        return self._sequential_auth_check(driver_factory, ready_services, results)
+    
+    def _sequential_auth_check(self, driver_factory, services, results) -> dict:
+        """Perform sequential authentication checks to avoid Chrome profile conflicts"""
+        import random
+        import time
+        
+        print(f"\n🔍 Starting sequential authentication check for {len(services)} services...")
+        print("📝 Note: Running sequentially to avoid Chrome profile conflicts")
+        
+        for i, service in enumerate(services, 1):
             try:
-                print(f"\n🔍 Checking {service}...")
+                print(f"\n[{i}/{len(services)}] 🔍 Checking {service}...")
                 
-                # Check if profile exists
-                profiles = driver_factory.list_profiles()
-                if not profiles[service]["ready"]:
-                    results[service] = {
-                        "status": "not_initialized",
-                        "message": "Profile not initialized"
-                    }
-                    print(f"❌ {service}: Profile not initialized")
-                    continue
+                # Human-like delay between checks
+                if i > 1:  # No delay for the first service
+                    inter_check_delay = random.uniform(0.5, 1.5)
+                    print(f"⏳ Inter-check delay: {inter_check_delay:.1f}s")
+                    time.sleep(inter_check_delay)
                 
-                # Test authentication
                 with driver_factory.get_driver(service, headed=False) as driver:
                     if self.is_logged_in(driver, service):
+                        print(f"✅ {service}: Authenticated")
                         results[service] = {
                             "status": "authenticated", 
                             "message": "Session active"
                         }
-                        print(f"✅ {service}: Authenticated")
                     else:
+                        print(f"⚠️  {service}: Needs login")
                         results[service] = {
                             "status": "needs_login",
                             "message": "Session expired"
                         }
-                        print(f"⚠️  {service}: Needs login")
                         
             except Exception as e:
+                print(f"❌ {service}: Error - {e}")
                 results[service] = {
                     "status": "error",
                     "message": str(e)
                 }
-                print(f"❌ {service}: Error - {e}")
         
+        authenticated_count = len([r for r in results.values() if r['status'] == 'authenticated'])
+        print(f"\n📊 Summary: {authenticated_count}/{len(results)} services ready")
         return results
 
 

@@ -73,16 +73,21 @@ class LocalLLMClient:
         start_time = time.time()
         
         try:
-            # Prepare the request payload
+            # Prepare the request payload with optimized settings
             payload = {
                 "model": self.model,
                 "prompt": prompt,
                 "stream": False,
                 "options": {
-                    "num_predict": max_tokens,
+                    "num_predict": min(max_tokens, 500),  # Limit response length for speed
                     "temperature": temperature,
                     "top_p": 0.9,
-                    "repeat_penalty": 1.1
+                    "repeat_penalty": 1.1,
+                    "num_ctx": 2048,  # Reduced context window for faster processing
+                    "num_batch": 512,  # Optimize batch size
+                    "num_gqa": 8,     # Optimize group query attention
+                    "num_gpu": 1,     # Use GPU if available
+                    "num_thread": 4   # Optimize thread count
                 }
             }
             
@@ -90,11 +95,12 @@ class LocalLLMClient:
             if system_prompt:
                 payload["system"] = system_prompt
             
-            # Make request to Ollama API
+            # Make request to Ollama API with shorter timeout for simple queries
+            timeout = 30 if len(prompt) < 200 else 60
             response = requests.post(
                 f"{self.api_url}/generate",
                 json=payload,
-                timeout=60,
+                timeout=timeout,
                 headers={"Content-Type": "application/json"}
             )
             
@@ -121,7 +127,7 @@ class LocalLLMClient:
         except requests.exceptions.Timeout:
             return LocalLLMResponse(
                 success=False,
-                error_message="Request timeout (60s)",
+                error_message=f"Request timeout ({timeout}s)",
                 execution_time=time.time() - start_time,
                 model_name=self.model
             )

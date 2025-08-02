@@ -1,5 +1,3 @@
-2025/07/25-23:17:53.543 129baa Reusing MANIFEST /Users/akshitharsola/Documents/Samay/samay-v3/profiles/perplexity/Default/Local Storage/leveldb/MANIFEST-000001
-2025/07/25-23:17:53.546 129baa Recovering log #4
-2025/07/25-23:17:53.546 129baa Reusing old log /Users/akshitharsola/Documents/Samay/samay-v3/profiles/perplexity/Default/Local Storage/leveldb/000004.log 
-2025/07/25-23:18:03.975 129baa Level-0 table #8: started
-2025/07/25-23:18:03.989 129baa Level-0 table #8: 715841 bytes OK
+2025/07/27-11:19:15.285 1835f4 Reusing MANIFEST /Users/akshitharsola/Documents/Samay/samay-v3/profiles/perplexity/Default/Local Storage/leveldb/MANIFEST-000001
+2025/07/27-11:19:15.288 1835f4 Recovering log #11
+2025/07/27-11:19:15.288 1835f4 Reusing old log /Users/akshitharsola/Documents/Samay/samay-v3/profiles/perplexity/Default/Local Storage/leveldb/000011.log 

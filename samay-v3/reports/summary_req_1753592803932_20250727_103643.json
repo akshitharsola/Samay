@@ -1,0 +1,46 @@
+{
+  "request_id": "req_1753592803932",
+  "timestamp": "2025-07-27T10:36:43.932938",
+  "prompt": "Please ask all 3 services regarding MCP knowledge ?",
+  "execution_summary": {
+    "total_time": 44.278748750686646,
+    "successful_services": 0,
+    "failed_services": 3,
+    "success_rate": 0.0
+  },
+  "service_results": [
+    {
+      "service": "gemini",
+      "success": false,
+      "execution_time": 15.001684188842773,
+      "retry_count": 0,
+      "response_length": 0,
+      "has_error": true,
+      "error_type": null
+    },
+    {
+      "service": "claude",
+      "success": false,
+      "execution_time": 32.60741305351257,
+      "retry_count": 0,
+      "response_length": 0,
+      "has_error": true,
+      "error_type": "Failed to submit prompt"
+    },
+    {
+      "service": "perplexity",
+      "success": false,
+      "execution_time": 42.220726013183594,
+      "retry_count": 0,
+      "response_length": 0,
+      "has_error": true,
+      "error_type": "Failed to submit prompt"
+    }
+  ],
+  "performance_metrics": {
+    "fastest_service": "gemini",
+    "slowest_service": "perplexity",
+    "average_response_time": 29.94327441851298,
+    "total_retries": 0
+  }
+}

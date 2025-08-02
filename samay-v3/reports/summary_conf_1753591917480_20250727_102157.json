@@ -1,0 +1,28 @@
+{
+  "request_id": "conf_1753591917480",
+  "timestamp": "2025-07-27T10:21:57.480730",
+  "prompt": "HI! Any idea what is MCP in internet means ?",
+  "execution_summary": {
+    "total_time": 38.43254780769348,
+    "successful_services": 1,
+    "failed_services": 0,
+    "success_rate": 1.0
+  },
+  "service_results": [
+    {
+      "service": "local_phi3",
+      "success": true,
+      "execution_time": 38.431118965148926,
+      "retry_count": 0,
+      "response_length": 2272,
+      "has_error": false,
+      "error_type": null
+    }
+  ],
+  "performance_metrics": {
+    "fastest_service": "local_phi3",
+    "slowest_service": "local_phi3",
+    "average_response_time": 38.431118965148926,
+    "total_retries": 0
+  }
+}

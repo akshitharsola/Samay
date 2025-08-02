@@ -1,0 +1,86 @@
+{
+  "manifest_version": 3,
+  "name": "Samay v6 - Multi-AI Automation",
+  "version": "1.0.0",
+  "description": "Browser extension for automating queries across multiple AI services",
+  
+  "permissions": [
+    "scripting",
+    "tabs", 
+    "storage",
+    "activeTab"
+  ],
+  
+  "host_permissions": [
+    "https://chat.openai.com/*",
+    "https://chatgpt.com/*",
+    "https://claude.ai/*",
+    "https://gemini.google.com/*",
+    "https://www.perplexity.ai/*",
+    "http://localhost:3000/*"
+  ],
+  
+  "background": {
+    "service_worker": "background.js"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": ["http://localhost:*/*"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Samay v6 - Multi-AI Automation",
+    "default_icon": {
+      "16": "assets/icons/icon16.png",
+      "32": "assets/icons/icon32.png",
+      "48": "assets/icons/icon48.png",
+      "128": "assets/icons/icon128.png"
+    }
+  },
+  
+  "icons": {
+    "16": "assets/icons/icon16.png",
+    "32": "assets/icons/icon32.png", 
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
+  },
+  
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "bridge.js"
+      ],
+      "matches": [
+        "http://localhost:*/*"
+      ]
+    },
+    {
+      "resources": [
+        "automation/*.js", 
+        "automation/chatgpt_automation.js",
+        "automation/claude_automation.js",
+        "automation/gemini_automation.js", 
+        "automation/perplexity_automation.js",
+        "automation/automation_orchestrator.js",
+        "automation/error_handler.js",
+        "utils/*.js"
+      ],
+      "matches": [
+        "https://chat.openai.com/*",
+        "https://chatgpt.com/*",
+        "https://claude.ai/*", 
+        "https://gemini.google.com/*",
+        "https://www.perplexity.ai/*"
+      ]
+    }
+  ]
+}

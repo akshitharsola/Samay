@@ -1,13 +1,3 @@
-2025/07/25-23:17:28.978 1297db Reusing MANIFEST /Users/akshitharsola/Documents/Samay/samay-v3/profiles/claude/Default/Local Storage/leveldb/MANIFEST-000001
-2025/07/25-23:17:28.981 1297db Recovering log #10
-2025/07/25-23:17:28.982 1297db Level-0 table #12: started
-2025/07/25-23:17:28.989 1297db Level-0 table #12: 11876 bytes OK
-2025/07/25-23:17:28.991 1297db Delete type=0 #10
-2025/07/25-23:17:28.991 1297dd Compacting 4@0 + 0@1 files
-2025/07/25-23:17:28.996 1297dd Generated table #14@0: 32 keys, 13233 bytes
-2025/07/25-23:17:28.996 1297dd Compacted 4@0 + 0@1 files => 13233 bytes
-2025/07/25-23:17:28.997 1297dd compacted to: files[ 0 1 0 0 0 0 0 ]
-2025/07/25-23:17:28.998 1297dd Delete type=2 #3
-2025/07/25-23:17:28.998 1297dd Delete type=2 #12
-2025/07/25-23:17:28.998 1297dd Delete type=2 #6
-2025/07/25-23:17:28.998 1297dd Delete type=2 #9
+2025/07/27-11:17:01.624 1823de Reusing MANIFEST /Users/akshitharsola/Documents/Samay/samay-v3/profiles/claude/Default/Local Storage/leveldb/MANIFEST-000001
+2025/07/27-11:17:01.627 1823de Recovering log #52
+2025/07/27-11:17:01.627 1823de Reusing old log /Users/akshitharsola/Documents/Samay/samay-v3/profiles/claude/Default/Local Storage/leveldb/000052.log 

@@ -1,5 +1,5 @@
-2025/07/26-00:21:37.811 134354 Reusing MANIFEST /Users/akshitharsola/Documents/Samay/samay-v3/profiles/claude/Default/Local Storage/leveldb/MANIFEST-000001
-2025/07/26-00:21:37.816 134354 Recovering log #13
-2025/07/26-00:21:37.817 134354 Level-0 table #16: started
-2025/07/26-00:21:37.829 134354 Level-0 table #16: 11787 bytes OK
-2025/07/26-00:21:37.835 134354 Delete type=0 #13
+2025/07/27-11:17:13.820 18261f Reusing MANIFEST /Users/akshitharsola/Documents/Samay/samay-v3/profiles/claude/Default/Local Storage/leveldb/MANIFEST-000001
+2025/07/27-11:17:13.823 18261f Recovering log #52
+2025/07/27-11:17:13.824 18261f Level-0 table #55: started
+2025/07/27-11:17:13.830 18261f Level-0 table #55: 12075 bytes OK
+2025/07/27-11:17:13.832 18261f Delete type=0 #52

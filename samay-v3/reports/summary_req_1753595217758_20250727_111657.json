@@ -1,0 +1,46 @@
+{
+  "request_id": "req_1753595217758",
+  "timestamp": "2025-07-27T11:16:57.758280",
+  "prompt": "Please respond in structured machine-readable format using the following template:\n\n```json\n{\n  \"response\": \"your main response here\",\n  \"summary\": \"brief summary in one sentence\",\n  \"key_points\": [\"point 1\", \"point 2\", \"point 3\"],\n  \"confidence\": 0.95,\n  \"category\": \"information|question|task|other\"\n}\n```\n\nUser Query: Ask all 3 services about MCP",
+  "execution_summary": {
+    "total_time": 186.88857316970825,
+    "successful_services": 0,
+    "failed_services": 3,
+    "success_rate": 0.0
+  },
+  "service_results": [
+    {
+      "service": "claude",
+      "success": false,
+      "execution_time": 51.61027407646179,
+      "retry_count": 0,
+      "response_length": 0,
+      "has_error": true,
+      "error_type": "Failed to submit prompt"
+    },
+    {
+      "service": "gemini",
+      "success": false,
+      "execution_time": 70.09252214431763,
+      "retry_count": 0,
+      "response_length": 0,
+      "has_error": true,
+      "error_type": "Failed to submit prompt"
+    },
+    {
+      "service": "perplexity",
+      "success": false,
+      "execution_time": 50.63369011878967,
+      "retry_count": 0,
+      "response_length": 0,
+      "has_error": true,
+      "error_type": "Failed to submit prompt"
+    }
+  ],
+  "performance_metrics": {
+    "fastest_service": "perplexity",
+    "slowest_service": "gemini",
+    "average_response_time": 57.44549544652303,
+    "total_retries": 0
+  }
+}

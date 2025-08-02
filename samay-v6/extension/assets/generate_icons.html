@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Samay v6 Icon Generator</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .icon-container { margin: 20px 0; }
+        canvas { border: 1px solid #ccc; margin: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Samay v6 Extension Icon Generator</h1>
+    <p>Right-click on each icon and "Save image as..." to download the PNG files.</p>
+    
+    <div class="icon-container">
+        <h3>16x16 Icon</h3>
+        <canvas id="icon16" width="16" height="16"></canvas>
+    </div>
+    
+    <div class="icon-container">
+        <h3>32x32 Icon</h3>
+        <canvas id="icon32" width="32" height="32"></canvas>
+    </div>
+    
+    <div class="icon-container">
+        <h3>48x48 Icon</h3>
+        <canvas id="icon48" width="48" height="48"></canvas>
+    </div>
+    
+    <div class="icon-container">
+        <h3>128x128 Icon</h3>
+        <canvas id="icon128" width="128" height="128"></canvas>
+    </div>
+
+    <script>
+        function drawIcon(canvas) {
+            const ctx = canvas.getContext('2d');
+            const size = canvas.width;
+            const center = size / 2;
+            const radius = size * 0.4;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, size, size);
+            
+            // Background gradient
+            const gradient = ctx.createRadialGradient(center, center, 0, center, center, radius);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            
+            // Draw background circle
+            ctx.beginPath();
+            ctx.arc(center, center, radius, 0, 2 * Math.PI);
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            
+            // Draw robot icon (simplified)
+            ctx.fillStyle = 'white';
+            
+            // Robot head (smaller circle)
+            const headRadius = radius * 0.6;
+            ctx.beginPath();
+            ctx.arc(center, center - radius * 0.1, headRadius, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Robot eyes
+            const eyeSize = size > 32 ? 2 : 1;
+            ctx.fillStyle = '#333';
+            ctx.fillRect(center - radius * 0.3, center - radius * 0.3, eyeSize, eyeSize);
+            ctx.fillRect(center + radius * 0.1, center - radius * 0.3, eyeSize, eyeSize);
+            
+            // Robot mouth (if size allows)
+            if (size >= 32) {
+                ctx.beginPath();
+                ctx.arc(center, center + radius * 0.1, radius * 0.2, 0, Math.PI);
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = '#333';
+                ctx.stroke();
+            }
+            
+            // Convert to downloadable image
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                canvas.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `icon${size}.png`;
+                    link.click();
+                });
+            });
+        }
+        
+        // Generate all icons
+        ['icon16', 'icon32', 'icon48', 'icon128'].forEach(id => {
+            const canvas = document.getElementById(id);
+            drawIcon(canvas);
+        });
+        
+        // Instructions
+        const instructions = document.createElement('div');
+        instructions.innerHTML = `
+            <h3>Instructions:</h3>
+            <ol>
+                <li>Right-click on each icon above</li>
+                <li>Select "Save image as..." or "Save picture as..."</li>
+                <li>Save each file as icon16.png, icon32.png, icon48.png, icon128.png</li>
+                <li>Place all PNG files in the /extension/assets/icons/ directory</li>
+            </ol>
+            <p><strong>Note:</strong> The icons are automatically generated with a robot theme to represent the AI automation functionality.</p>
+        `;
+        document.body.appendChild(instructions);
+    </script>
+</body>
+</html>

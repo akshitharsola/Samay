@@ -22,7 +22,7 @@ from orchestrator.drivers import SamayDriverFactory
 from orchestrator.validators import SessionValidator
 from orchestrator.prompt_dispatcher import PromptDispatcher, PromptRequest
 from orchestrator.response_aggregator import ResponseAggregator
-from otp_service.gmail_fetcher import GmailOTPFetcher
+# from otp_service.gmail_fetcher import GmailOTPFetcher  # Commented out to avoid dependency issues
 
 load_dotenv()
 
@@ -34,7 +34,7 @@ class SamaySessionManager:
         self.base_dir = Path(base_dir)
         self.driver_factory = SamayDriverFactory(base_dir)
         self.validator = SessionValidator()
-        self.otp_fetcher = GmailOTPFetcher()
+        # self.otp_fetcher = GmailOTPFetcher()  # Commented out to avoid dependency issues
         self.prompt_dispatcher = PromptDispatcher(base_dir)
         self.response_aggregator = ResponseAggregator(str(self.base_dir / "reports"))
         

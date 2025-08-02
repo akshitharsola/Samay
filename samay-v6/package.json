@@ -1,0 +1,41 @@
+{
+  "name": "samay-v6",
+  "version": "1.0.0",
+  "description": "Browser Extension Multi-AI Automation System",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "backend": "cd web-app/backend && python main.py",
+    "frontend": "cd web-app/frontend && npm start",
+    "install-all": "cd web-app/backend && pip install -r requirements.txt && cd ../frontend && npm install",
+    "test": "npm run test-backend && npm run test-frontend",
+    "test-backend": "cd web-app/backend && pytest",
+    "test-frontend": "cd web-app/frontend && npm test",
+    "build": "cd web-app/frontend && npm run build",
+    "lint": "eslint . --ext .js,.jsx"
+  },
+  "keywords": [
+    "ai",
+    "automation",
+    "browser-extension",
+    "productivity",
+    "chatgpt",
+    "claude",
+    "gemini",
+    "perplexity"
+  ],
+  "author": "Samay Development Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.0",
+    "eslint": "^8.45.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "local"
+  }
+}

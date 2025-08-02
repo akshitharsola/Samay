@@ -1,0 +1,46 @@
+{
+  "request_id": "req_1753592198254",
+  "timestamp": "2025-07-27T10:26:38.254959",
+  "prompt": "HI! What is MCP, please ask all three services ?",
+  "execution_summary": {
+    "total_time": 14.781544923782349,
+    "successful_services": 0,
+    "failed_services": 3,
+    "success_rate": 0.0
+  },
+  "service_results": [
+    {
+      "service": "gemini",
+      "success": false,
+      "execution_time": 11.920825958251953,
+      "retry_count": 0,
+      "response_length": 0,
+      "has_error": true,
+      "error_type": null
+    },
+    {
+      "service": "claude",
+      "success": false,
+      "execution_time": 13.093360185623169,
+      "retry_count": 0,
+      "response_length": 0,
+      "has_error": true,
+      "error_type": null
+    },
+    {
+      "service": "perplexity",
+      "success": false,
+      "execution_time": 14.779659032821655,
+      "retry_count": 0,
+      "response_length": 0,
+      "has_error": true,
+      "error_type": null
+    }
+  ],
+  "performance_metrics": {
+    "fastest_service": "gemini",
+    "slowest_service": "perplexity",
+    "average_response_time": 13.264615058898926,
+    "total_retries": 0
+  }
+}

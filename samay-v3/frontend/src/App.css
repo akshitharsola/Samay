@@ -154,8 +154,16 @@ body {
 .service-status {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.5rem;
   font-size: 0.875rem;
+  width: 100%;
+}
+
+.service-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .service-status.ready {
@@ -165,6 +173,52 @@ body {
 .service-status.not-ready {
   color: #dc2626;
   opacity: 0.7;
+}
+
+.login-button {
+  background: #4f46e5;
+  color: white;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.login-button:hover:not(:disabled) {
+  background: #3730a3;
+}
+
+.login-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Checkbox Option */
+.checkbox-option {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.15s;
+}
+
+.checkbox-option:hover {
+  background: #f9fafb;
+}
+
+.checkbox-option input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+.checkbox-option small {
+  color: #6b7280;
+  font-size: 0.75rem;
+  margin-left: 1.25rem;
 }
 
 /* Local Info */
@@ -303,6 +357,13 @@ body {
   background: #fef2f2;
   color: #dc2626;
   border: 1px solid #fecaca;
+}
+
+.message.system .message-content {
+  background: #f0f9ff;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+  border-bottom-left-radius: 4px;
 }
 
 .message-metadata {

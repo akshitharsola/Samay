@@ -1,0 +1,28 @@
+{
+  "request_id": "conf_1753591956066",
+  "timestamp": "2025-07-27T10:22:36.066965",
+  "prompt": "Any idea about MCP",
+  "execution_summary": {
+    "total_time": 60.03575086593628,
+    "successful_services": 0,
+    "failed_services": 1,
+    "success_rate": 0.0
+  },
+  "service_results": [
+    {
+      "service": "local_phi3",
+      "success": false,
+      "execution_time": 60.0353000164032,
+      "retry_count": 0,
+      "response_length": 0,
+      "has_error": true,
+      "error_type": null
+    }
+  ],
+  "performance_metrics": {
+    "fastest_service": "local_phi3",
+    "slowest_service": "local_phi3",
+    "average_response_time": 60.0353000164032,
+    "total_retries": 0
+  }
+}

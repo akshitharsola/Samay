@@ -33,6 +33,7 @@ class QueryRequest(BaseModel):
     prompt: str
     services: Optional[List[str]] = None
     confidential: bool = False
+    machine_code: bool = False
     timeout: int = 60
     session_id: Optional[str] = None
 
@@ -86,6 +87,14 @@ samay_manager = SamaySessionManager()
 active_connections: Dict[str, WebSocket] = {}
 conversation_history: Dict[str, List[Dict[str, Any]]] = {}
 
+# Health check caching
+health_check_cache = {
+    "last_check": 0,
+    "cache_duration": 300,  # 5 minutes
+    "services_status": {},
+    "local_llm_status": {}
+}
+
 
 class ConnectionManager:
     """Manage WebSocket connections for real-time communication"""
@@ -138,18 +147,39 @@ async def root():
 
 @app.get("/health", response_model=HealthResponse)
 async def health_check():
-    """Get system health status"""
+    """Get system health status with caching"""
+    import time
+    
     try:
+        current_time = time.time()
+        
+        # Check if cache is still valid
+        if (current_time - health_check_cache["last_check"]) < health_check_cache["cache_duration"]:
+            print("📋 Using cached health check results")
+            return HealthResponse(
+                status="healthy" if health_check_cache["services_status"] else "degraded",
+                services=health_check_cache["services_status"],
+                local_llm=health_check_cache["local_llm_status"],
+                timestamp=datetime.now().isoformat()
+            )
+        
+        print("🔍 Performing fresh health check (cache expired)")
+        
         # Get service health
         service_health = samay_manager.health_check()
         
         # Get local LLM health
         local_llm_health = samay_manager.prompt_dispatcher.local_llm.health_check()
         
+        # Update cache
+        health_check_cache["last_check"] = current_time
+        health_check_cache["services_status"] = service_health if isinstance(service_health, dict) else {}
+        health_check_cache["local_llm_status"] = local_llm_health
+        
         return HealthResponse(
             status="healthy" if service_health else "degraded",
-            services=service_health if isinstance(service_health, dict) else {},
-            local_llm=local_llm_health,
+            services=health_check_cache["services_status"],
+            local_llm=health_check_cache["local_llm_status"],
             timestamp=datetime.now().isoformat()
         )
     except Exception as e:
@@ -183,9 +213,26 @@ async def process_query(request: QueryRequest, background_tasks: BackgroundTasks
             "timestamp": datetime.now().isoformat()
         })
         
+        # Modify prompt for machine code mode if requested
+        final_prompt = request.prompt
+        if request.machine_code and not request.confidential:
+            final_prompt = f"""Please respond in structured machine-readable format using the following template:
+
+```json
+{{
+  "response": "your main response here",
+  "summary": "brief summary in one sentence",
+  "key_points": ["point 1", "point 2", "point 3"],
+  "confidence": 0.95,
+  "category": "information|question|task|other"
+}}
+```
+
+User Query: {request.prompt}"""
+        
         # Process the query
         result = samay_manager.multi_agent_query(
-            prompt=request.prompt,
+            prompt=final_prompt,
             services=request.services,
             timeout=request.timeout,
             confidential=request.confidential
@@ -232,8 +279,44 @@ async def process_query(request: QueryRequest, background_tasks: BackgroundTasks
 
 @app.get("/services")
 async def get_services():
-    """Get available services and their status"""
+    """Get available services status (lightweight, no authentication checks)"""
     try:
+        # Return lightweight status without triggering browser-based health checks
+        print("📋 Returning lightweight services status")
+        return {
+            "services": {
+                "claude": {"ready": True, "profile_path": "profiles/claude"},
+                "gemini": {"ready": True, "profile_path": "profiles/gemini"}, 
+                "perplexity": {"ready": True, "profile_path": "profiles/perplexity"}
+            },
+            "total_services": 3,
+            "ready_services": 3,
+            "local_llm_available": True
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/services/detailed")
+async def get_services_detailed():
+    """Get detailed services status with authentication checks (use sparingly)"""
+    import time
+    
+    try:
+        current_time = time.time()
+        
+        # Use caching for detailed checks (5 minutes)
+        if (current_time - health_check_cache["last_check"]) < health_check_cache["cache_duration"]:
+            print("📋 Using cached detailed services status")
+            return {
+                "services": health_check_cache["services_status"],
+                "total_services": 3,
+                "ready_services": len([s for s in health_check_cache["services_status"].values() if s.get("status") == "authenticated"]),
+                "local_llm_available": health_check_cache["local_llm_status"].get("available", False),
+                "last_check": health_check_cache["last_check"]
+            }
+        
+        print("🔍 Performing detailed services check")
         summary = samay_manager.get_status_summary()
         return {
             "services": summary["services"],
@@ -273,6 +356,60 @@ async def get_report(report_path: str):
         return FileResponse(report_file)
     else:
         raise HTTPException(status_code=404, detail="Report not found")
+
+
+@app.post("/login/{service}")
+async def trigger_login(service: str):
+    """Trigger interactive login flow for a specific service"""
+    try:
+        print(f"🔑 Manual login requested for {service}")
+        
+        # Import here to avoid circular imports
+        from orchestrator.drivers import SamayDriverFactory
+        from orchestrator.validators import SessionValidator
+        
+        factory = SamayDriverFactory()
+        validator = SessionValidator()
+        
+        # Check if service exists
+        if service not in factory.services:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Unknown service: {service}. Available: {list(factory.services.keys())}"
+            )
+        
+        # Run the interactive login flow (same as before)
+        print(f"\n🔐 Starting interactive login for {service.title()}")
+        print("=" * 50)
+        
+        try:
+            with factory.get_driver(service, headed=True) as driver:
+                success = validator.perform_login_flow(driver, service)
+                if success:
+                    print(f"✅ {service.title()} login completed successfully!")
+                    return {
+                        "success": True,
+                        "service": service,
+                        "message": f"{service.title()} login completed successfully"
+                    }
+                else:
+                    print(f"❌ {service.title()} login failed or was cancelled")
+                    return {
+                        "success": False,
+                        "service": service,
+                        "message": f"{service.title()} login failed or was cancelled"
+                    }
+        except Exception as e:
+            print(f"❌ Login flow error for {service}: {e}")
+            return {
+                "success": False,
+                "service": service,
+                "message": f"Login error: {str(e)}"
+            }
+        
+    except Exception as e:
+        print(f"❌ Login trigger error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.websocket("/ws/{session_id}")

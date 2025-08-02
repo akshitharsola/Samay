@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Samay v6 - Multi-AI Automation</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    
+    <!-- Header -->
+    <div class="popup-header">
+      <div class="logo-section">
+        <div class="logo">🤖</div>
+        <div class="app-info">
+          <h1>Samay v6</h1>
+          <p>Multi-AI Automation</p>
+        </div>
+      </div>
+      <div class="version">v1.0.0</div>
+    </div>
+
+    <!-- Status Section -->
+    <div class="status-section">
+      <h3>Extension Status</h3>
+      
+      <div class="status-item">
+        <div class="status-indicator" id="extension-status">
+          <div class="status-dot offline"></div>
+        </div>
+        <div class="status-text">
+          <span class="status-label">Extension</span>
+          <span class="status-value" id="extension-status-text">Initializing...</span>
+        </div>
+      </div>
+
+      <div class="status-item">
+        <div class="status-indicator" id="webapp-status">
+          <div class="status-dot offline"></div>
+        </div>
+        <div class="status-text">
+          <span class="status-label">Web App</span>
+          <span class="status-value" id="webapp-status-text">Disconnected</span>
+        </div>
+      </div>
+
+      <div class="status-item">
+        <div class="status-indicator" id="automation-status">
+          <div class="status-dot offline"></div>
+        </div>
+        <div class="status-text">
+          <span class="status-label">Automation</span>
+          <span class="status-value" id="automation-status-text">Idle</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="actions-section">
+      <h3>Quick Actions</h3>
+      
+      <button class="action-btn primary" id="open-webapp-btn">
+        <span class="btn-icon">🌐</span>
+        Open Web App
+      </button>
+      
+      <button class="action-btn secondary" id="check-connection-btn">
+        <span class="btn-icon">🔄</span>
+        Check Connection
+      </button>
+      
+      <button class="action-btn danger" id="stop-automation-btn" disabled>
+        <span class="btn-icon">🛑</span>
+        Stop Automation
+      </button>
+    </div>
+
+    <!-- Current Session Info -->
+    <div class="session-section" id="session-section" style="display: none;">
+      <h3>Current Session</h3>
+      
+      <div class="session-info">
+        <div class="session-item">
+          <span class="session-label">Session ID:</span>
+          <span class="session-value" id="session-id">-</span>
+        </div>
+        <div class="session-item">
+          <span class="session-label">Services:</span>
+          <span class="session-value" id="active-services">-</span>
+        </div>
+        <div class="session-item">
+          <span class="session-label">Progress:</span>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+          </div>
+          <span class="session-value" id="progress-text">0%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Service Status -->
+    <div class="services-section" id="services-section" style="display: none;">
+      <h3>AI Services</h3>
+      
+      <div class="services-grid">
+        <div class="service-card" id="service-chatgpt">
+          <div class="service-icon">🤖</div>
+          <div class="service-name">ChatGPT</div>
+          <div class="service-status">Idle</div>
+        </div>
+        
+        <div class="service-card" id="service-claude">
+          <div class="service-icon">🧠</div>
+          <div class="service-name">Claude</div>
+          <div class="service-status">Idle</div>
+        </div>
+        
+        <div class="service-card" id="service-gemini">
+          <div class="service-icon">💎</div>
+          <div class="service-name">Gemini</div>
+          <div class="service-status">Idle</div>
+        </div>
+        
+        <div class="service-card" id="service-perplexity">
+          <div class="service-icon">🔍</div>
+          <div class="service-name">Perplexity</div>
+          <div class="service-status">Idle</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="popup-footer">
+      <div class="footer-links">
+        <a href="#" id="help-link">Help</a>
+        <a href="#" id="settings-link">Settings</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="popup.js"></script>
+</body>
+</html>

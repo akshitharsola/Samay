@@ -1,0 +1,532 @@
+/* Samay v6 Application Styles */
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header Styles */
+.app-header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 20px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.header-title h1 {
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-title p {
+  font-size: 14px;
+  color: #666;
+  margin: 4px 0 0 0;
+}
+
+.header-status {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Main Content */
+.app-main {
+  flex: 1;
+  padding: 40px 0;
+}
+
+.query-section {
+  margin-bottom: 32px;
+}
+
+.status-section {
+  margin-bottom: 32px;
+}
+
+.results-section {
+  margin-bottom: 32px;
+}
+
+/* Query Input Section */
+.query-input-container {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.query-input-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.query-input-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 8px 0;
+}
+
+.query-input-header p {
+  color: #666;
+  font-size: 16px;
+  margin: 0;
+}
+
+.query-form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.query-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 20px;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  font-size: 16px;
+  font-family: inherit;
+  resize: vertical;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.query-textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.query-textarea::placeholder {
+  color: #adb5bd;
+}
+
+.query-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 200px;
+  justify-content: center;
+}
+
+.submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Automation Status Styles */
+.automation-status {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.status-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.status-badge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-starting {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-running {
+  background: #cce7ff;
+  color: #004085;
+}
+
+.status-complete {
+  background: #d1edff;
+  color: #0066cc;
+}
+
+.status-error {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.status-progress {
+  margin-top: 16px;
+}
+
+.progress-text {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+/* Service Status Grid */
+.service-status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.service-status-item {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.service-status-item.pending {
+  border-color: #ffc107;
+}
+
+.service-status-item.running {
+  border-color: #007bff;
+  background: #e7f3ff;
+}
+
+.service-status-item.complete {
+  border-color: #28a745;
+  background: #d4edda;
+}
+
+.service-status-item.error {
+  border-color: #dc3545;
+  background: #f8d7da;
+}
+
+.service-icon {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.service-name {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.service-progress {
+  font-size: 12px;
+  color: #666;
+}
+
+/* Response Viewer Styles */
+.response-viewer {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.response-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.response-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.response-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.response-tabs {
+  display: flex;
+  border-bottom: 2px solid #e9ecef;
+  margin-bottom: 24px;
+  gap: 4px;
+}
+
+.response-tab {
+  padding: 12px 24px;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.response-tab:hover {
+  color: #333;
+}
+
+.response-tab.active {
+  color: #667eea;
+  border-bottom-color: #667eea;
+}
+
+.response-content {
+  min-height: 200px;
+}
+
+.service-response {
+  margin-bottom: 24px;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+}
+
+.service-response-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.service-name-badge {
+  font-weight: 600;
+  color: #667eea;
+}
+
+.response-meta {
+  font-size: 12px;
+  color: #666;
+}
+
+.service-response-content {
+  line-height: 1.6;
+  color: #333;
+}
+
+.synthesis-content {
+  line-height: 1.8;
+  color: #333;
+}
+
+.synthesis-content h1,
+.synthesis-content h2,
+.synthesis-content h3 {
+  color: #333;
+  margin-top: 24px;
+  margin-bottom: 12px;
+}
+
+.synthesis-content h1 {
+  font-size: 24px;
+}
+
+.synthesis-content h2 {
+  font-size: 20px;
+}
+
+.synthesis-content h3 {
+  font-size: 18px;
+}
+
+.synthesis-content p {
+  margin-bottom: 16px;
+}
+
+.synthesis-content ul,
+.synthesis-content ol {
+  margin-bottom: 16px;
+  padding-left: 24px;
+}
+
+.synthesis-content li {
+  margin-bottom: 8px;
+}
+
+/* Extension Connector (Hidden) */
+.extension-connector {
+  display: none;
+}
+
+/* Service Status Indicator */
+.service-status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-healthy {
+  background: #d1edff;
+  color: #0066cc;
+}
+
+.status-degraded {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-offline {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.status-icon {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-icon.healthy {
+  background: #28a745;
+}
+
+.status-icon.degraded {
+  background: #ffc107;
+}
+
+.status-icon.offline {
+  background: #dc3545;
+}
+
+/* Footer */
+.app-footer {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 20px 0;
+  text-align: center;
+  color: #666;
+}
+
+.app-footer p {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.version {
+  background: #e9ecef;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .app-header {
+    padding: 16px 0;
+  }
+  
+  .header-title h1 {
+    font-size: 24px;
+  }
+  
+  .query-input-container {
+    padding: 24px;
+  }
+  
+  .query-input-header h2 {
+    font-size: 20px;
+  }
+  
+  .submit-btn {
+    padding: 14px 24px;
+    font-size: 14px;
+    min-width: 180px;
+  }
+  
+  .response-viewer {
+    padding: 24px;
+  }
+  
+  .response-title {
+    font-size: 20px;
+  }
+  
+  .response-tabs {
+    flex-wrap: wrap;
+  }
+  
+  .service-status-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Dark mode support (future enhancement) */
+@media (prefers-color-scheme: dark) {
+  /* Dark mode styles can be added here */
+}
