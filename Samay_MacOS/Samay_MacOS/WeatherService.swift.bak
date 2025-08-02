@@ -1,0 +1,186 @@
+import Foundation
+import WeatherKit
+import CoreLocation
+
+@MainActor
+class WeatherService: NSObject, ObservableObject, CLLocationManagerDelegate {
+    private let weatherKit = WeatherKit.WeatherService.shared
+    private let locationManager = CLLocationManager()
+    private var currentLocation: CLLocation?
+    
+    @Published var isLocationAuthorized = false
+    @Published var locationError: String?
+    
+    override init() {
+        super.init()
+        setupLocationManager()
+    }
+    
+    private func setupLocationManager() {
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        requestLocationPermission()
+    }
+    
+    private func requestLocationPermission() {
+        switch locationManager.authorizationStatus {
+        case .notDetermined:
+            locationManager.requestWhenInUseAuthorization()
+        case .authorized, .authorizedWhenInUse:
+            isLocationAuthorized = true
+            getCurrentLocation()
+        case .denied, .restricted:
+            locationError = "Location access denied. Please enable location services in System Preferences."
+        @unknown default:
+            locationError = "Unknown location authorization status."
+        }
+    }
+    
+    private func getCurrentLocation() {
+        guard isLocationAuthorized else { return }
+        locationManager.requestLocation()
+    }
+    
+    // MARK: - CLLocationManagerDelegate
+    
+    nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.last else { return }
+        Task { @MainActor in
+            currentLocation = location
+        }
+    }
+    
+    nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        Task { @MainActor in
+            locationError = "Failed to get location: \(error.localizedDescription)"
+        }
+    }
+    
+    nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        Task { @MainActor in
+            switch manager.authorizationStatus {
+            case .authorized, .authorizedWhenInUse:
+                isLocationAuthorized = true
+                locationError = nil
+                getCurrentLocation()
+            case .denied, .restricted:
+                isLocationAuthorized = false
+                locationError = "Location access denied. Please enable location services."
+            case .notDetermined:
+                manager.requestWhenInUseAuthorization()
+            @unknown default:
+                break
+            }
+        }
+    }
+    
+    // MARK: - Weather Methods
+    
+    func getCurrentWeather() async throws -> String {
+        guard let location = currentLocation else {
+            throw WeatherError.locationUnavailable
+        }
+        
+        do {
+            let weather = try await weatherKit.weather(for: location)
+            let current = weather.currentWeather
+            
+            let temperature = Measurement(value: current.temperature.value, unit: UnitTemperature.celsius)
+            let temperatureStr = temperature.formatted(.measurement(width: .abbreviated))
+            
+            let condition = current.condition.description
+            let humidity = Int(current.humidity * 100)
+            let windSpeed = current.wind.speed.formatted(.measurement(width: .abbreviated))
+            
+            return """
+            Current weather conditions:
+            • Temperature: \(temperatureStr)
+            • Condition: \(condition)
+            • Humidity: \(humidity)%
+            • Wind: \(windSpeed)
+            """
+        } catch {
+            throw WeatherError.weatherFetchFailed(error.localizedDescription)
+        }
+    }
+    
+    func getWeatherForecast(days: Int = 3) async throws -> String {
+        guard let location = currentLocation else {
+            throw WeatherError.locationUnavailable
+        }
+        
+        do {
+            let weather = try await weatherKit.weather(for: location)
+            let forecast = weather.dailyForecast.prefix(days)
+            
+            var forecastString = "Weather forecast for the next \(days) days:\n\n"
+            
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "EEEE, MMM d"
+            
+            for dailyWeather in forecast {
+                let date = dateFormatter.string(from: dailyWeather.date)
+                let high = dailyWeather.highTemperature.formatted(.measurement(width: .abbreviated))
+                let low = dailyWeather.lowTemperature.formatted(.measurement(width: .abbreviated))
+                let condition = dailyWeather.condition.description
+                let precipitation = Int(dailyWeather.precipitationChance * 100)
+                
+                forecastString += """
+                \(date):
+                • High: \(high), Low: \(low)
+                • Condition: \(condition)
+                • Precipitation: \(precipitation)%
+                
+                """
+            }
+            
+            return forecastString
+        } catch {
+            throw WeatherError.weatherFetchFailed(error.localizedDescription)
+        }
+    }
+    
+    func getWeatherAlerts() async throws -> String {
+        guard let location = currentLocation else {
+            throw WeatherError.locationUnavailable
+        }
+        
+        do {
+            let weather = try await weatherKit.weather(for: location)
+            let alerts = weather.weatherAlerts ?? []
+            
+            if alerts.isEmpty {
+                return "No weather alerts for your area."
+            }
+            
+            var alertsString = "⚠️ Weather Alerts:\n\n"
+            
+            for alert in alerts {
+                alertsString += """
+                • \(alert.summary)
+                  Severity: \(alert.severity.rawValue.capitalized)
+                  Issued: \(alert.detailsURL?.absoluteString ?? "Weather Alert")
+                
+                """
+            }
+            
+            return alertsString
+        } catch {
+            throw WeatherError.weatherFetchFailed(error.localizedDescription)
+        }
+    }
+}
+
+enum WeatherError: LocalizedError {
+    case locationUnavailable
+    case weatherFetchFailed(String)
+    
+    var errorDescription: String? {
+        switch self {
+        case .locationUnavailable:
+            return "Location is not available. Please ensure location services are enabled."
+        case .weatherFetchFailed(let message):
+            return "Failed to fetch weather data: \(message)"
+        }
+    }
+}

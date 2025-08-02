@@ -1,0 +1,46 @@
+session_management:
+  timeout: 3600  # 1 hour
+  max_sessions: 10
+  cleanup_interval: 300  # 5 minutes
+  
+credential_storage:
+  encryption_algorithm: "Fernet"
+  key_rotation_days: 90
+  backup_enabled: true
+  
+browser_profiles:
+  claude:
+    profile_path: "./profiles/claude"
+    persistent: true
+    privacy_mode: false
+    
+  gemini:
+    profile_path: "./profiles/gemini"
+    persistent: true
+    privacy_mode: false
+    
+  perplexity:
+    profile_path: "./profiles/perplexity"
+    persistent: true
+    privacy_mode: false
+
+premium_accounts:
+  claude:
+    subscription_type: "Pro"
+    features:
+      - "artifacts"
+      - "opus_model"
+      - "long_context"
+      
+  gemini:
+    subscription_type: "Advanced"
+    features:
+      - "model_selection"
+      - "workspace_integration"
+      
+  perplexity:
+    subscription_type: "Pro"
+    features:
+      - "copilot"
+      - "academic_search"
+      - "file_upload"

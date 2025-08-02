@@ -1,0 +1,92 @@
+ai_services:
+  chatgpt:
+    provider: "automation"
+    method: "browser_automation"
+    url: "https://chat.openai.com"
+    rate_limit: "natural_human_timing"
+    wait_timeout: 10
+    selectors:
+      chat_input: 'textarea[data-id="root"]'
+      send_button: 'button[data-testid="send-button"]'
+      response: 'div[data-message-author-role="assistant"]'
+      login_button: 'button:has-text("Log in")'
+      new_chat: 'button:has-text("New chat")'
+      
+  claude:
+    provider: "automation"
+    method: "browser_automation"
+    url: "https://claude.ai"
+    rate_limit: "natural_human_timing"
+    wait_timeout: 10
+    selectors:
+      chat_input: 'div[contenteditable="true"]'
+      send_button: 'button[aria-label*="Send"]'
+      response: 'div[data-testid*="message"]'
+      login_button: 'button:has-text("Continue")'
+      new_chat: 'button:has-text("New Chat")'
+    
+  gemini:
+    provider: "automation"
+    method: "browser_automation"
+    url: "https://gemini.google.com"
+    rate_limit: "natural_human_timing"
+    wait_timeout: 10
+    selectors:
+      chat_input: 'rich-textarea textarea'
+      send_button: 'button[aria-label*="Send message"]'
+      response: 'div[data-testid*="response"]'
+      login_button: 'button:has-text("Sign in")'
+      new_chat: 'button[aria-label*="New chat"]'
+    
+  perplexity:
+    provider: "automation"
+    method: "browser_automation"
+    url: "https://www.perplexity.ai"
+    rate_limit: "natural_human_timing"
+    wait_timeout: 10
+    selectors:
+      chat_input: 'textarea[placeholder*="Ask anything"]'
+      send_button: 'button[aria-label*="Submit"]'
+      response: 'div[class*="prose"]'
+      login_button: 'button:has-text("Sign Up")'
+      new_chat: 'button:has-text("New Thread")'
+
+utility_apis:
+  weather:
+    provider: "openweathermap"
+    free_tier: "1000 calls/day"
+    api_key_env: "OPENWEATHER_API_KEY"
+    endpoints:
+      current: "https://api.openweathermap.org/data/2.5/weather"
+      forecast: "https://api.openweathermap.org/data/2.5/forecast"
+    
+  news:
+    provider: "newsapi"
+    free_tier: "1000 requests/day"
+    api_key_env: "NEWS_API_KEY"
+    endpoints:
+      headlines: "https://newsapi.org/v2/top-headlines"
+      everything: "https://newsapi.org/v2/everything"
+      
+  currency:
+    provider: "exchangerate-api"
+    free_tier: "1500 requests/month"
+    api_key_env: "EXCHANGE_RATE_API_KEY"
+    endpoint: "https://v6.exchangerate-api.com/v6"
+    
+  maps:
+    provider: "opencage"
+    free_tier: "2500 requests/day"
+    api_key_env: "OPENCAGE_API_KEY"
+    endpoint: "https://api.opencagedata.com/geocode/v1/json"
+    
+  translate:
+    provider: "mymemory"
+    free_tier: "unlimited"
+    endpoint: "https://api.mymemory.translated.net/get"
+    
+  stock:
+    provider: "alphavantage"
+    free_tier: "5 calls/minute"
+    api_key_env: "ALPHA_VANTAGE_API_KEY"
+    endpoint: "https://www.alphavantage.co/query"

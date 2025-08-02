@@ -65,36 +65,36 @@ class PromptDispatcher:
         # Service configurations for prompt submission (updated for 2025 DOM)
         self.service_configs = {
             "claude": {
-                "prompt_selector": '[contenteditable="true"]',
-                "submit_selector": 'button[aria-label="Send"]',
-                "response_selector": '.assistant-response p',
-                "wait_for_response": 5,
+                "prompt_selector": 'div[contenteditable="true"]',
+                "submit_selector": 'button[aria-label*="Send"]',
+                "response_selector": 'div[data-testid*="message"]',
+                "wait_for_response": 8,
                 "backup_selectors": {
-                    "prompt": ['div[contenteditable="true"]', 'textarea[placeholder*="Message"]'],
-                    "submit": ['button[aria-label="Send Message"]', 'button[type="submit"]'],
-                    "response": ['.font-claude-message', '[data-testid="bot-message"]']
+                    "prompt": ['textarea[placeholder*="Message"]', 'div[role="textbox"]', '.ProseMirror'],
+                    "submit": ['button[type="submit"]', '[data-testid*="send-button"]', 'button[aria-label*="send"]'],
+                    "response": ['div[role="article"]', '.message-content', '[data-testid*="bot-message"]']
                 }
             },
             "gemini": {
-                "prompt_selector": 'textarea[role="textbox"]',
-                "submit_selector": 'button[aria-label="Send Message"]',
-                "response_selector": '.reply-content',
-                "wait_for_response": 5,
+                "prompt_selector": 'rich-textarea > div > p',
+                "submit_selector": 'button[aria-label*="Send message"]',
+                "response_selector": 'div[data-testid*="response"]',
+                "wait_for_response": 8,
                 "backup_selectors": {
-                    "prompt": ['div[contenteditable="true"]', 'textarea[placeholder*="Enter"]'],
-                    "submit": ['button[aria-label="Send message"]', 'button[data-testid="send-button"]'],
-                    "response": ['.model-response-text', '[data-testid="response-text"]']
+                    "prompt": ['textarea[placeholder*="Enter a prompt"]', 'div[contenteditable="true"]', '[data-testid*="input-textarea"]'],
+                    "submit": ['button[type="submit"]', '[data-testid*="send-button"]', 'button[aria-label*="Send"]'],
+                    "response": ['div[role="main"]', '.response-container', '[data-testid*="answer"]']
                 }
             },
             "perplexity": {
-                "prompt_selector": 'input[type="text"]',
-                "submit_selector": 'button[data-testid="ask-button"]',
-                "response_selector": '.AnswerItem_answerText___3w1rW',
-                "wait_for_response": 7,
+                "prompt_selector": 'input[placeholder*="Ask anything"]',
+                "submit_selector": 'button[aria-label*="Submit"]',
+                "response_selector": '#main',
+                "wait_for_response": 10,
                 "backup_selectors": {
-                    "prompt": ['textarea[placeholder*="Ask anything"]', 'input[placeholder*="Ask"]'],
-                    "submit": ['button[aria-label="Submit"]', 'button[type="submit"]'],
-                    "response": ['.prose', '[data-testid="answer-text"]']
+                    "prompt": ['textarea[placeholder*="Ask"]', 'div[contenteditable="true"]', '#searchBox'],
+                    "submit": ['button[type="submit"]', '[data-testid*="search-button"]', 'button[aria-label*="ask"]'],
+                    "response": ['.answer-content', 'div[data-testid*="answer"]', '.search-result']
                 }
             }
         }

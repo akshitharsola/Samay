@@ -4,7 +4,35 @@
 <dict>
 	<key>com.apple.security.app-sandbox</key>
 	<true/>
+	<key>com.apple.security.automation.apple-events</key>
+	<true/>
 	<key>com.apple.security.files.user-selected.read-only</key>
+	<true/>
+	<key>com.apple.security.network.client</key>
+	<true/>
+	<key>com.apple.security.temporary-exception.apple-events</key>
+	<array>
+		<string>com.apple.systemevents</string>
+		<string>com.anthropic.claudefordesktop</string>
+		<string>ai.perplexity.mac</string>
+		<string>com.openai.chat</string>
+		<string>com.apple.Safari</string>
+		<string>com.apple.finder</string>
+		<string>com.apple.mail</string>
+		<string>com.apple.iCal</string>
+	</array>
+	<key>com.apple.security.scripting-targets</key>
+	<dict>
+		<key>com.apple.finder</key>
+		<array>
+			<string>com.apple.finder.files</string>
+		</array>
+	</dict>
+	<key>com.apple.security.personal-information.calendars</key>
+	<true/>
+	<key>com.apple.security.personal-information.contacts</key>
+	<true/>
+	<key>com.apple.security.personal-information.location</key>
 	<true/>
 </dict>
 </plist>

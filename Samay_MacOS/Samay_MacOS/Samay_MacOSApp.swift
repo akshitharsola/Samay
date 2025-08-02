@@ -7,9 +7,34 @@
 
 import SwiftUI
 import SwiftData
+import AppKit
+
+// AppDelegate to handle Apple Events TCC properly
+class AppDelegate: NSObject, NSApplicationDelegate {
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        // Delay Apple Events initialization to ensure TCC system is ready
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.initializeAppleEventsPermissions()
+        }
+    }
+    
+    private func initializeAppleEventsPermissions() {
+        Task {
+            do {
+                // Trigger Apple Events permission request using NSAppleScript
+                try await AppleScriptExecutor.shared.requestAppleEventsPermissionDialog()
+            } catch {
+                print("Failed to initialize Apple Events permissions: \(error)")
+            }
+        }
+    }
+}
 
 @main
 struct Samay_MacOSApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @State private var isMenuPresented = false
+    
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,
@@ -24,9 +49,10 @@ struct Samay_MacOSApp: App {
     }()
 
     var body: some Scene {
-        WindowGroup {
-            ContentView()
+        MenuBarExtra("Samay AI", systemImage: "brain.head.profile") {
+            MenuBarContentView()
+                .modelContainer(sharedModelContainer)
         }
-        .modelContainer(sharedModelContainer)
+        .menuBarExtraStyle(.window)
     }
 }

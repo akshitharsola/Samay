@@ -1,69 +1,155 @@
 # Samay - Multi-Agent AI Assistant Platform
 
-🚀 **Complete AI session management solution with persistent, anti-bot resistant sessions**
+🚀 **Complete AI session management solution with multi-version architecture evolution**
 
 ## 🎯 Project Overview
 
-Samay is a comprehensive multi-agent AI assistant platform that solves the persistent problem of maintaining authenticated sessions across multiple AI services. Built with advanced anti-bot detection bypass and automated session management.
+Samay is a comprehensive multi-agent AI assistant platform that has evolved through multiple architectural approaches to solve the persistent problem of maintaining authenticated sessions across multiple AI services. From browser automation to native applications to browser extensions, each version has pushed the boundaries of AI service integration.
 
 ## 📁 Project Structure
 
 ```
 Samay/
-├── samay-v3/                 # Core session manager (Python)
+├── samay-v3/                 # Core session manager (Python + SeleniumBase)
 │   ├── orchestrator/         # Main driver and validation logic
 │   ├── otp_service/          # Automated OTP handling
 │   ├── profiles/             # Persistent browser profiles
 │   └── frontend/             # React-based UI dashboard
-├── samay-ui/                 # Standalone React UI components
-├── INFORMATION/              # Project documentation & research
-├── test-results/             # Testing artifacts
-└── README.md                # This file
+├── samay-v4/                 # Desktop automation approach (PyAutoGUI)
+│   ├── desktop_automation/   # Platform-specific automation
+│   ├── orchestrator/         # Desktop service management
+│   └── frontend/             # Enhanced React UI
+├── samay-v5/                 # Hybrid API + Browser automation
+│   ├── ai_automation/        # Advanced automation strategies
+│   ├── backend/             # FastAPI with authentication
+│   ├── core/                # API managers and response synthesis
+│   └── frontend/            # Modern React dashboard
+├── samay-v6/                 # Browser extension architecture (Current)
+│   ├── extension/           # Chrome Manifest V3 extension
+│   ├── web-app/            # React frontend + FastAPI backend
+│   └── automation/         # Service-specific automation scripts
+├── Samay_MacOS/             # Native macOS application experiment
+│   ├── Samay_MacOS/        # SwiftUI native application
+│   ├── Swift automation/   # Accessibility API integration
+│   └── System integrations/ # Calendar, Mail, Weather services
+├── INFORMATION/             # Project documentation & research
+├── test-results/            # Testing artifacts
+└── README.md               # This file
 ```
 
-## 🔧 Core Components
+## 🔧 Architecture Evolution
 
-### 1. **Samay v3** - Main Session Manager
+### **Samay v3** - Browser Automation Foundation
 - **Anti-bot protection** with SeleniumBase UC Mode
 - **Persistent sessions** across computer restarts
 - **Automated OTP fetching** via Gmail API
 - **Multi-service support** (Claude, Gemini, Perplexity)
+- **Status**: Production ready, stable session management
 
-### 2. **Modern React UI**
-- Real-time session monitoring dashboard
-- Service health status indicators
-- Interactive setup wizard
-- Responsive design with Tailwind CSS
+### **Samay v4** - Desktop Automation Approach
+- **PyAutoGUI-based** screen automation
+- **Desktop application targeting** (Claude Desktop, etc.)
+- **Cross-platform automation** with macOS focus
+- **Enhanced response processing** and aggregation
+- **Status**: Prototype phase, platform-specific challenges
 
-### 3. **Research Documentation**
-- Comprehensive implementation plans
-- Anti-bot detection research
-- Session persistence techniques
-- Performance optimization strategies
+### **Samay v5** - Hybrid API + Browser Strategy
+- **Dual-mode operation**: API integration + browser fallback
+- **Advanced authentication** management with credential storage
+- **Rate limiting** and API quota management
+- **Weather & News APIs** integration for context
+- **Modern FastAPI backend** with React dashboard
+- **Status**: Feature-complete, API cost considerations
+
+### **Samay v6** - Browser Extension Architecture (Current)
+- **Chrome Manifest V3** extension with zero API costs
+- **Bridge communication** between web app and extension
+- **Service-specific automation** scripts for each AI platform
+- **Real-time response extraction** and synthesis
+- **Cross-origin communication** with security compliance
+- **Status**: Active development, query submission phase complete
+
+### **Samay MacOS** - Native Application Experiment
+- **SwiftUI native interface** with system integration
+- **Accessibility API automation** for precise control
+- **System services integration** (Calendar, Mail, Weather)
+- **Menu bar application** with background operation
+- **Apple Events** and AppleScript automation
+- **Status**: Research prototype, TCC permission challenges
+
+### **Research & Documentation**
+- **Multi-architecture analysis** and performance comparisons
+- **Anti-bot detection research** across all approaches
+- **Platform-specific implementation** strategies
+- **Security and privacy** considerations for each architecture
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Python 3.8+ with conda environment
-- Node.js 16+ for React UI
-- Chrome browser for UC Mode profiles
-- Gmail API credentials for OTP automation
+- **Python 3.8+** with conda environment (v3, v4, v5)
+- **Node.js 16+** for React UI (all versions)
+- **Chrome browser** for automation and extension
+- **Xcode** for macOS native development (Samay MacOS)
 
-### Installation
+### Choose Your Version
 
+#### **Samay v6** (Recommended - Current Development)
 ```bash
 # Clone the repository
 git clone https://github.com/akshitharsola/Samay.git
-cd Samay
+cd Samay/samay-v6
 
-# Set up the core session manager
-cd samay-v3
+# Backend setup
+cd web-app/backend
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+pip install -r requirements.txt
+python main_simple.py
+
+# Frontend setup (new terminal)
+cd web-app/frontend
+npm install
+npm start
+
+# Extension setup
+# 1. Open chrome://extensions/
+# 2. Enable Developer mode
+# 3. Load unpacked: samay-v6/extension/
+```
+
+#### **Samay v5** (Feature Complete)
+```bash
+cd Samay/samay-v5
+
+# Backend setup
+cd backend
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python main.py
+
+# Frontend setup
+cd frontend
+npm install
+npm start
+```
+
+#### **Samay v3** (Stable Production)
+```bash
+cd Samay/samay-v3
 source /opt/anaconda3/bin/activate samay
 pip install -r requirements.txt
 
 # Set up the React UI
 cd frontend
 npm install
+```
+
+#### **Samay MacOS** (Native Experiment)
+```bash
+cd Samay/Samay_MacOS
+# Open Samay_MacOS.xcodeproj in Xcode
+# Build and run (requires macOS development setup)
 ```
 
 ### Configuration
@@ -172,12 +258,31 @@ ollama pull mistral         # Lightweight alternative
 
 ## 📈 Development Status
 
-- ✅ **Core Session Management** - Production ready
-- ✅ **React UI Dashboard** - Feature complete
-- ✅ **OTP Automation** - Stable
-- 🔄 **Multi-Agent Orchestration** - In development
-- 🔄 **Response Aggregation** - Planned
-- 🔄 **Docker Deployment** - Planned
+### **Version Comparison**
+
+| Feature | v3 | v4 | v5 | v6 | MacOS |
+|---------|----|----|----|----|-------|
+| **Session Management** | ✅ Production | ✅ Working | ✅ Advanced | ✅ Bridge-based | 🔄 Research |
+| **Query Submission** | ✅ Stable | ✅ Working | ✅ Dual-mode | ✅ **Complete** | 🔄 Prototype |
+| **Response Extraction** | ✅ Working | ✅ Enhanced | ✅ Advanced | 🔄 **In Progress** | 🔄 Basic |
+| **Anti-Bot Protection** | ✅ Advanced | ⚠️ Limited | ✅ Improved | ✅ Extension-based | ✅ Native |
+| **API Integration** | ❌ None | ❌ None | ✅ Full | ❌ Zero-cost | 🔄 System APIs |
+| **Cross-Platform** | ✅ Yes | ⚠️ Limited | ✅ Yes | ✅ Chrome-based | ❌ macOS only |
+| **Cost** | 🆓 Free | 🆓 Free | 💰 API costs | 🆓 **Zero cost** | 🆓 Free |
+
+### **Current Focus: Samay v6**
+- ✅ **Query Submission Phase** - Complete (All 4 services)
+- 🔄 **Response Extraction** - Next milestone
+- 🔄 **Data Synthesis** - Planned
+- 🔄 **Follow-up Automation** - Future
+- 🔄 **Export Features** - Future
+
+### **Architectural Lessons Learned**
+- **v3**: Proven session persistence, but maintenance intensive
+- **v4**: Desktop automation limitations, platform dependencies
+- **v5**: Feature-rich but API costs prohibitive
+- **v6**: Zero-cost solution with extension architecture
+- **MacOS**: Native integration potential, permission complexity
 
 ## 🎉 Success Metrics
 
@@ -190,16 +295,25 @@ When properly configured:
 
 ## 📝 Documentation
 
-Comprehensive documentation available in the `INFORMATION/` directory:
+### **Comprehensive Documentation Available:**
 
-- **Implementation Plans** - Detailed technical specifications
-- **Research Findings** - Anti-bot detection solutions
-- **Architecture Overview** - System design and components
-- **Performance Analysis** - Optimization techniques
+- **`INFORMATION/`** - Multi-version research and implementation plans
+- **`PROJECT_STATUS_REPORT_03082025.md`** - Latest v6 development status
+- **Version-specific READMEs** - Individual setup and usage guides
+- **Research Findings** - Anti-bot detection and automation solutions
+- **Architecture Analysis** - Multi-version comparison and lessons learned
+
+### **Latest Project Report**
+See [`PROJECT_STATUS_REPORT_03082025.md`](./PROJECT_STATUS_REPORT_03082025.md) for:
+- Complete v6 implementation status
+- Query submission milestone achievement
+- Next phase roadmap (response extraction)
+- Technical architecture details
+- User's modularization insights
 
 ## 🤝 Contributing
 
-This is a personal research project. Feel free to fork and adapt for your needs.
+This is a research project exploring multiple AI automation architectures. Each version represents different approaches to the same challenge. Feel free to explore, learn from, and adapt any approach for your needs.
 
 ## 📄 License
 
@@ -207,6 +321,12 @@ MIT License - see individual component directories for specific licensing.
 
 ---
 
-**🚀 Start here**: `cd samay-v3 && python orchestrator/manager.py`
+### **🚀 Quick Start by Version:**
+- **Production Stability**: `cd samay-v3 && python orchestrator/manager.py`
+- **Feature Rich**: `cd samay-v5 && python backend/main.py`
+- **Current Development**: `cd samay-v6 && npm start` (see setup above)
+- **Native macOS**: Open `Samay_MacOS/Samay_MacOS.xcodeproj` in Xcode
 
-Built with ❤️ for persistent AI session management on macOS
+**Latest Achievement**: ✅ **Samay v6 successfully submits queries to all 4 AI services (Aug 2025)**
+
+Built with ❤️ through continuous architectural evolution and experimentation

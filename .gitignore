@@ -90,6 +90,35 @@ secrets/
 
 # Browser profiles (may contain sensitive data)
 profiles/*/
+# Chrome browser cache and data files
+**/Cache/
+**/Code Cache/
+**/GPUCache/
+**/GrShaderCache/
+**/ShaderCache/
+**/DawnGraphiteCache/
+**/DawnWebGPUCache/
+**/GraphiteDawnCache/
+**/AutofillAiModelCache/
+**/*Cache*/
+**/Session Storage/
+**/Local Storage/
+**/Sessions/
+**/Service Worker/
+**/shared_proto_db/
+Cookies
+History
+Favicons
+Preferences
+"Network Persistent State"
+"Reporting and NEL"
+TransportSecurity
+WebStorage/
+DIPS
+DIPS-wal
+first_party_sets.db
+"Extension State/"
+"GCM Store/"
 
 # Large cache files
 *.pack

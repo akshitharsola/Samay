@@ -1,0 +1,55 @@
+rate_limits:
+  ai_services:
+    claude:
+      requests_per_minute: 20
+      requests_per_hour: 100
+      natural_delay_min: 2.0
+      natural_delay_max: 5.0
+      
+    gemini:
+      requests_per_minute: 15
+      requests_per_hour: 80
+      natural_delay_min: 2.5
+      natural_delay_max: 4.0
+      
+    perplexity:
+      requests_per_minute: 25
+      requests_per_hour: 120
+      natural_delay_min: 1.5
+      natural_delay_max: 3.0
+      
+  utility_apis:
+    weather:
+      requests_per_day: 1000
+      requests_per_minute: 60
+      
+    news:
+      requests_per_day: 1000
+      requests_per_hour: 100
+      
+    currency:
+      requests_per_month: 1500
+      requests_per_day: 50
+      
+    maps:
+      requests_per_day: 2500
+      requests_per_hour: 100
+      
+    stock:
+      requests_per_minute: 5
+      requests_per_hour: 300
+
+intelligent_routing:
+  priority_levels:
+    high: ["weather", "currency", "translate"]
+    medium: ["news", "maps", "stock"]
+    low: ["ai_services"]
+    
+  fallback_strategy:
+    primary: "local_llm"
+    secondary: "cached_response"
+    
+  cost_optimization:
+    prefer_free_apis: true
+    daily_budget_usd: 5.0
+    cost_tracking: true

@@ -1,0 +1,22 @@
+# Essential Core Dependencies
+fastapi
+uvicorn[standard]
+websockets
+pydantic
+pydantic-settings
+python-dotenv
+httpx
+aiohttp
+rich
+click
+ollama
+
+# Database & Security
+cryptography
+sqlalchemy
+databases
+aiosqlite
+
+# Text Processing
+textblob
+jinja2
